@@ -6,12 +6,20 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import extract, asc, desc
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
+from flask_migrate import Migrate
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///financial_data.db'
+if 'DATABASE_URL' in os.environ:
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///financial_data.db'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-CORS(app)
+migrate = Migrate(app, db)
+
+# Frondend request only
+CORS(app, resources={r"/*": {"origins": "https://jessica-ix.github.io/ValueGlance-fronend"}})
 load_dotenv() 
 API_KEY = os.getenv('API_KEY')
 
