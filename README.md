@@ -1,7 +1,8 @@
 # Backend
 
 ## Deployed Link
-[Access Backend API](https://value-glance-backend.vercel.app/)
+[Access Backend API](https://valueglance-backend.vercel.app/)
+
 By default, the backend is configured to allow requests only from the deployed frontend (`https://value-glance-frontend.vercel.app`) and from any local `localhost` domains.
 If you want to modify the CORS policy to allow requests from other domains, you can update the `CORS` configuration in the backend code.
 
