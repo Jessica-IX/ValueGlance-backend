@@ -133,7 +133,11 @@ def filter_data():
     #print(data_to_return)
     return jsonify(data_to_return)
 
+
 if __name__ == '__main__':
     with app.app_context():
         init_db()
-    #app.run() for development
+    app.run()
+else:
+    with app.app_context():
+        init_db()
