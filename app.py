@@ -18,12 +18,13 @@ Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# Frondend request only
+# Frondend/local host request only
 CORS(app, resources={r"/*": {"origins": ["https://value-glance-frontend.vercel.app", "http://localhost:*"]}})
 API_KEY = os.getenv('API_KEY')
 
 class FinancialData(Base):
     __tablename__ = 'income_statement'
+    # Only these columns are needed
     date = Column(Date, primary_key=True)
     revenue = Column(Integer)
     grossProfit = Column(Integer)
@@ -55,6 +56,7 @@ def init_db():
 
 @app.route('/get_income-statement', methods=['GET'])
 def get_data():
+    # At most 1 API request per day
     last_updated_entry = session.query(FinancialData).order_by(FinancialData.last_updated.desc()).first()
     if last_updated_entry and (datetime.utcnow() - last_updated_entry.last_updated) < timedelta(days=1):
         data = session.query(FinancialData).all()
@@ -105,6 +107,7 @@ def filter_data():
     sort_by = request.args.get('sortBy')
     order = request.args.get('order')
 
+    # Filter range
     query = session.query(FinancialData).filter(
         extract('year', FinancialData.date) >= year_start,
         extract('year', FinancialData.date) <= year_end,
@@ -114,6 +117,7 @@ def filter_data():
         FinancialData.netIncome <= netIncome_max
     )
 
+    # Sort
     if sort_by in ['date', 'revenue', 'netIncome']:
         column = getattr(FinancialData, sort_by, None)
         if column:
