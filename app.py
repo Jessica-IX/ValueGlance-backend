@@ -16,7 +16,7 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///financial_data.db' 
 '''
 load_dotenv() 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('POSTGRES_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
