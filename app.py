@@ -16,8 +16,14 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///financial_data.db' 
 '''
 load_dotenv() 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('POSTGRES_URL')
+db_url = os.environ.get('POSTGRES_URL', '')
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('POSTGRES_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+print(db_url)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
