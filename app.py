@@ -9,18 +9,21 @@ from dotenv import load_dotenv
 from flask_migrate import Migrate
 
 app = Flask(__name__)
-if 'DATABASE_URL' in os.environ:
+
+'''if 'DATABASE_URL' in os.environ:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///financial_data.db'
-
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///financial_data.db' 
+'''
+load_dotenv() 
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 # Frondend request only
 CORS(app, resources={r"/*": {"origins": "https://jessica-ix.github.io/ValueGlance-fronend"}})
-load_dotenv() 
 API_KEY = os.getenv('API_KEY')
 
 class FinancialData(db.Model):
@@ -92,7 +95,8 @@ def get_data():
             db.session.add(new_entry)
         db.session.commit()
         
-        return jsonify(response.json())
+        all_entries = db.session.query(FinancialData).all()
+        return jsonify([entry.to_dict() for entry in all_entries])
 
     except requests.exceptions.RequestException as e:
         return jsonify({"error": str(e)}), 500
