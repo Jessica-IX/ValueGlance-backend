@@ -19,7 +19,7 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 # Frondend/local host request only
-CORS(app, resources={r"/*": {"origins": ["https://value-glance-frontend.vercel.app", "http://localhost:*"]}})
+CORS(app, resources={r"/*": {"origins": ["https://litianxin-deploy.hanshumao.com", "https://value-glance-frontend.vercel.app", "http://localhost:*"]}})
 API_KEY = os.getenv('API_KEY')
 
 class FinancialData(Base):
